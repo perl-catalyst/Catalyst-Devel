@@ -116,9 +116,11 @@ sub _handle_events {
     for my $event (@events) {
         my $path = $event->path();
         my $type = $event->type();
-        if (   ( $type ne 'delete' && -f $path )
-            || ( $type eq 'delete' && $path =~ $self->_filter ) )
-        {
+        if ( (    ( $type ne 'delete' && -f $path )
+               || ( $type eq 'delete' )
+             )
+             && ( $path =~ $self->_filter )
+        ) {
             push @files, { path => $path, type => $type };
         }
     }
