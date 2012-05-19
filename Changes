@@ -1,5 +1,10 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+        - Add x_authority metadata to the distribution for PAUSE.
+
+        - Fix restarter regex to apply to files being created/changed,
+          not just those being deleted.
+
         - Use iomode => ":raw" to stop PNG files getting corrupted
           when being slurped on windows as noted on the mailing list.
 
