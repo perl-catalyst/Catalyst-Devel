@@ -3,9 +3,11 @@ use warnings;
 use inc::Module::Install 0.91;
 use Module::Install::AuthorRequires;
 use Module::Install::AuthorTests;
+use Module::Install::Authority;
 
 name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
+authority 'MSTROUT';
 
 requires 'Moose';
 requires 'MooseX::Emulate::Class::Accessor::Fast';
