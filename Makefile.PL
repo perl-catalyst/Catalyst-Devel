@@ -7,7 +7,7 @@ use Module::Install::Authority;
 
 name     'Catalyst-Devel';
 all_from 'lib/Catalyst/Devel.pm';
-authority 'MSTROUT';
+authority 'cpan:MSTROUT';
 
 requires 'Moose';
 requires 'MooseX::Emulate::Class::Accessor::Fast';
