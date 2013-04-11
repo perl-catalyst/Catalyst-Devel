@@ -1,7 +1,7 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
         - Remove all PAR based deployment options, as they're unsupported
-          and don't even pretend to work on 5.9
+          and don't even pretend to work on 5.9 RT#83936
 
 1.37 2012-05-19 11:19:00
         - Add x_authority metadata to the distribution for PAUSE.
