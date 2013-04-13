@@ -45,6 +45,7 @@ __PACKAGE__->config(
 # Start the application
 __PACKAGE__->setup();
 
+=encoding utf8
 
 =head1 NAME
 
