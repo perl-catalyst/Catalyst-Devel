@@ -3,6 +3,7 @@ This file documents the revision history for Perl extension Catalyst-Devel.
         - Write =encoding utf8 into generated Pod files so that things
           work as expected for people with utf-8 characters in their unix
           username as returned by getpwuid (RT#84613)
+        - Fix unbalanced parenthesis in comptest.tt (RT#85661)
 
 1.38 2013-04-11 20:54:00
         - Remove all PAR based deployment options, as they're unsupported
