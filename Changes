@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.39 2013-06-14 12:44:17
         - Write =encoding utf8 into generated Pod files so that things
           work as expected for people with utf-8 characters in their unix
           username as returned by getpwuid (RT#84613)
