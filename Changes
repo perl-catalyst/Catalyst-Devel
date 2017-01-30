@@ -1,6 +1,8 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
         - Typo fixes. RT#87103
+        - Require File::ChangeNotify 0.27+ to work around issues with earlier
+          File::ChangeNotify versions and Moose 2.2000+ (RT #120040).
 
 1.39 2013-06-14 12:44:17
         - Write =encoding utf8 into generated Pod files so that things

@@ -22,8 +22,8 @@ has argv =>  (
 );
 
 has _watcher => (
-    is  => 'rw',
-    isa => 'File::ChangeNotify::Watcher',
+    is   => 'rw',
+    does => 'File::ChangeNotify::Watcher',
 );
 
 has _filter => (
