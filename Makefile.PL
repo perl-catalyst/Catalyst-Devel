@@ -19,7 +19,7 @@ requires 'Catalyst::Action::RenderView' => '0.10';
 requires 'Catalyst::Plugin::Static::Simple' => '0.28';
 requires 'Catalyst::Plugin::ConfigLoader' => '0.30';
 requires 'Config::General' => '2.42'; # as of 1.07, we use .conf and not .yaml
-requires 'File::ChangeNotify' => '0.07';
+requires 'File::ChangeNotify' => '0.27';
 requires 'File::Copy::Recursive';
 requires 'Path::Class' => '0.09';
 requires 'Template'    => '2.14';
