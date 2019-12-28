@@ -1,6 +1,7 @@
 use strict;
 use warnings;
 use lib '.';
+use lib 'inc';
 use inc::Module::Install 0.91;
 use Module::Install::AuthorRequires;
 use Module::Install::AuthorTests;
