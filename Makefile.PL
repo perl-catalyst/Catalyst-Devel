@@ -38,8 +38,6 @@ if (!$Module::Install::AUTHOR && $^O ne 'MSWin32') {
 requires 'Module::Install' => '1.02';
 
 author_requires 'IPC::Run3';
-author_requires 'Module::Info';
-author_requires 'File::Find::Rule';
 author_requires 'Test::Pod';
 author_requires 'Test::Pod::Coverage';
 
