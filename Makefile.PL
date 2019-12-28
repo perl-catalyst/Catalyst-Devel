@@ -52,9 +52,9 @@ if (!$ENV{CATALYST_DEVEL_NO_510_CHECK}) {
     use Symbol 'gensym';
     use IPC::Open3;
     use File::Spec;
-    open NULL, '>', File::Spec->devnull;
+    open my $null, '>', File::Spec->devnull;
     my $err = gensym;
-    my $pid = open3(gensym, '&>NULL', $err, "$^X -It/lib -MUnknownError -e 1");
+    my $pid = open3(gensym, $null, $err, qq{"$^X" -It/lib -MUnknownError -e 1});
 
     my $unknown_error = 0;
 
