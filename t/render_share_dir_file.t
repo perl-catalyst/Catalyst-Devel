@@ -1,7 +1,6 @@
 use strict;
 use warnings;
-use FindBin qw/$Bin/;
-use lib "$Bin/lib";
+use lib "t/lib";
 use Catalyst::Helper;
 use Test::More;
 

@@ -1,8 +1,7 @@
 use strict;
 use warnings;
-use FindBin qw/$Bin/;
 use File::Temp qw/tempfile/;
-use lib "$Bin/lib";
+use lib "t/lib";
 
 use MyTestHelper;
 
