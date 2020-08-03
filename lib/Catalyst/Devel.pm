@@ -4,11 +4,11 @@ require 5.008003;
 use strict;
 use warnings;
 
-# Change Catalyst::Helper also.
-our $VERSION             = '1.41';
+our $VERSION = '1.41';
+$VERSION =~ tr/_//d;
+
 our $CATALYST_SCRIPT_GEN = 40;
 
-$VERSION = eval $VERSION;
 
 =head1 NAME
 
