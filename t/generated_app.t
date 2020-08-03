@@ -2,10 +2,9 @@ use strict;
 use warnings;
 use lib ();
 use Cwd qw( abs_path );
-use File::Temp qw/ tempdir /;
-use File::Spec;
-use FindBin qw/$Bin/;
-use Catalyst::Devel;
+use File::Spec::Functions qw( devnull catdir catfile updir rel2abs );
+use File::Temp qw( tempdir );
+use FindBin qw( $Bin );
 use Catalyst::Helper;
 use Test::More;
 use Config;
@@ -28,7 +27,7 @@ if ($ENV{MAKEFLAGS}) {
 }
 
 my $dir = tempdir(CLEANUP => 1);
-my $devnull = File::Spec->devnull;
+my $devnull = devnull;
 
 diag "Generated app is in $dir";
 
@@ -48,9 +47,9 @@ chdir $dir or die "Cannot chdir to $dir: $!";
     $helper->mk_app('TestApp');
 }
 
-my $app_dir = File::Spec->catdir($dir, 'TestApp');
+my $app_dir = catdir($dir, 'TestApp');
 chdir($app_dir) or die "Cannot chdir to $app_dir: $!";
-lib->import(File::Spec->catdir($dir, 'TestApp', 'lib'));
+lib->import(catdir($dir, 'TestApp', 'lib'));
 
 my @files = qw|
     Makefile.PL
@@ -81,7 +80,7 @@ my @files = qw|
     script/testapp_create.pl
 |;
 
-foreach my $fn (map { File::Spec->catdir(@$_) } map { [ File::Spec::Unix->splitdir($_) ] } @files) {
+foreach my $fn (map { catdir(@$_) } map { [ split qr{/}, $_ ] } @files) {
     test_fn($fn);
 }
 create_ok($_, 'My' . $_) for qw/Model View Controller/;
@@ -93,7 +92,7 @@ command_ok( [ ($Config{make} || 'make') ] );
 
 run_generated_component_tests();
 
-my $server_script_file = File::Spec->catdir(qw/script testapp_server.pl/);
+my $server_script_file = catdir(qw/script testapp_server.pl/);
 my $server_script = do {
     open(my $fh, '<', $server_script_file) or fail $!;
     local $/;
@@ -130,9 +129,9 @@ is $server_script, $server_script_new;
 diag "Installed app is in $instdir";
 command_ok( [ ($Config{make} || 'make', 'install') ] );
 
-my $inst_app_dir = File::Spec->catdir($instdir);
+my $inst_app_dir = catdir($instdir);
 chdir($inst_app_dir) or die "Cannot chdir to $inst_app_dir: $!";
-lib->import(File::Spec->catdir($instdir, 'lib', 'perl5'));
+lib->import(catdir($instdir, 'lib', 'perl5'));
 
 my @installed_files = qw|
     lib/perl5/TestApp.pm
@@ -155,8 +154,8 @@ my @installed_files = qw|
     bin/testapp_create.pl
 |;
 
-foreach my $fn (map { File::Spec->catdir(@$_) } map { [ File::Spec::Unix->splitdir($_) ] } @installed_files) {
-    my $ffn = File::Spec->catfile($inst_app_dir, $fn);
+foreach my $fn (map { catdir(@$_) } map { [ split qr{/}, $_ ] } @installed_files) {
+    my $ffn = catfile($inst_app_dir, $fn);
     ok -r $ffn, "'$fn' installed in correct location";
 }
 
@@ -180,7 +179,7 @@ sub command_ok {
 
 sub runperl {
     my $comment = pop @_;
-    command_ok( [ $^X, '-I', File::Spec->catdir($Bin, '..', 'lib'), @_ ], $comment );
+    command_ok( [ $^X, '-I', catdir($Bin, '..', 'lib'), @_ ], $comment );
 }
 
 my @generated_component_tests;
@@ -206,15 +205,16 @@ sub run_generated_component_tests {
     local $ENV{TEST_POD} = 1;
     local $ENV{CATALYST_DEBUG} = 0;
     foreach my $fn (@generated_component_tests) {
+        my $full_name = rel2abs($fn);
         subtest "Generated app test: $fn", sub {
-            do File::Spec->rel2abs($fn);
+            do $full_name;
         };
     }
 }
 
 sub create_ok {
     my ($type, $name) = @_;
-    runperl( File::Spec->catdir('script', 'testapp_create.pl'), $type, $name,
+    runperl( catdir('script', 'testapp_create.pl'), $type, $name,
         "'script/testapp_create.pl $type $name' ok");
-    test_fn(File::Spec->catdir('t', sprintf("%s_%s.t", lc $type, $name)));
+    test_fn( catdir('t', sprintf("%s_%s.t", lc $type, $name)));
 }
