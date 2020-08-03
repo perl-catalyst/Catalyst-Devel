@@ -8,9 +8,7 @@ use File::Basename qw( dirname );
 use Catalyst::Helper;
 use Test::More;
 use Config;
-
-eval "use IPC::Run3";
-plan skip_all => 'These tests require IPC::Run3' if $@;
+use IPC::Open3 qw( open3 );
 
 my $helper_lib = abs_path(catdir(dirname($INC{'Catalyst/Helper.pm'}), updir));
 
@@ -173,17 +171,21 @@ done_testing;
 
 sub command_ok {
     my $cmd = shift;
-    my $desc = shift;
+    my $desc = shift || "Exit status ok for '@{$cmd}'";
 
-    my $stdout;
-    my $stderr;
-    run3( $cmd, \undef, \$stdout, \$stderr );
+    open my $stdin, '<', $devnull
+        or die "Cannot read $devnull: $!";
 
-    $desc ||= "Exit status ok for '@{$cmd}'";
-    unless ( is $? >> 8, 0, $desc ) {
-        diag "STDOUT:\n$stdout" if defined $stdout;
-        diag "STDERR:\n$stderr" if defined $stderr;
-    }
+    my $pid = open3( $stdin, my $stdout, undef, @$cmd );
+    my $output = do { local $/; <$stdout> };
+    waitpid $pid, 0;
+
+    my $result = is $?, 0, $desc;
+
+    diag "output:\n$output"
+      if !$result;
+
+    return $result;
 }
 
 sub runperl {

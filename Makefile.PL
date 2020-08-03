@@ -38,7 +38,6 @@ if (!$Module::Install::AUTHOR && $^O ne 'MSWin32') {
 # it in its inc/ directory for releases.
 requires 'Module::Install' => '1.02';
 
-author_requires 'IPC::Run3';
 author_requires 'Proc::Background';
 author_requires 'Test::Pod';
 author_requires 'Test::Pod::Coverage';
