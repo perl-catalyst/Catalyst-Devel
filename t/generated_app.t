@@ -23,8 +23,14 @@ my $instdir = tempdir(CLEANUP => 1);
 
 my $MAKE = $Config{make} || 'make';
 
-$ENV{PERL_MM_OPT} = "INSTALL_BASE=$instdir";
-$ENV{INSTALL_BASE} = $instdir;
+my $escaped_path = $instdir;
+$escaped_path =~ s/\\/\\\\/g;
+if ($escaped_path =~ s/ /\\ /g) {
+  $escaped_path = qq{"$escaped_path"};
+}
+
+$ENV{PERL_MM_OPT} = "INSTALL_BASE=$escaped_path";
+
 if ($ENV{MAKEFLAGS}) {
     $ENV{MAKEFLAGS} =~ s/PREFIX=[^\s]+//;
     $ENV{MAKEFLAGS} =~ s/INSTALL_BASE=[^\s]+//;
