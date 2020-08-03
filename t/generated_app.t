@@ -39,7 +39,7 @@ if ($ENV{MAKEFLAGS}) {
 my $dir = tempdir(CLEANUP => 1);
 my $devnull = devnull;
 
-diag "Generated app is in $dir";
+note "Generated app is in $dir";
 
 chdir $dir or die "Cannot chdir to $dir: $!";
 
@@ -135,7 +135,7 @@ my $server_script_new = do {
 
 is $server_script, $server_script_new;
 
-diag "Installed app is in $instdir";
+note "Installed app is in $instdir";
 command_ok( [ $MAKE, 'install' ] );
 
 my $inst_app_dir = catdir($instdir);
