@@ -19,11 +19,7 @@ use IO::Socket;
 use IPC::Open3;
 use Time::HiRes qw/sleep/;
 use Catalyst::Helper;
-eval "use Catalyst::Devel 1.04;";
-
-plan skip_all => 'Catalyst::Devel >= 1.04 required' if $@;
-eval "use File::Copy::Recursive";
-plan skip_all => 'File::Copy::Recursive required' if $@;
+use File::Copy::Recursive;
 
 plan tests => 35;
 
