@@ -4,13 +4,15 @@ use lib ();
 use Cwd qw( abs_path );
 use File::Spec::Functions qw( devnull catdir catfile updir rel2abs );
 use File::Temp qw( tempdir );
-use FindBin qw( $Bin );
+use File::Basename qw( dirname );
 use Catalyst::Helper;
 use Test::More;
 use Config;
 
 eval "use IPC::Run3";
 plan skip_all => 'These tests require IPC::Run3' if $@;
+
+my $helper_lib = abs_path(catdir(dirname($INC{'Catalyst/Helper.pm'}), updir));
 
 my $share_dir = abs_path('share');
 plan skip_all => "No share dir at $share_dir!"
@@ -179,7 +181,7 @@ sub command_ok {
 
 sub runperl {
     my $comment = pop @_;
-    command_ok( [ $^X, '-I', catdir($Bin, '..', 'lib'), @_ ], $comment );
+    command_ok( [ $^X, '-I', $helper_lib, @_ ], $comment );
 }
 
 my @generated_component_tests;
