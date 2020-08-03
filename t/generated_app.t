@@ -21,6 +21,8 @@ plan skip_all => "No share dir at $share_dir!"
 $ENV{CATALYST_DEVEL_SHAREDIR} = $share_dir;
 my $instdir = tempdir(CLEANUP => 1);
 
+my $MAKE = $Config{make} || 'make';
+
 $ENV{PERL_MM_OPT} = "INSTALL_BASE=$instdir";
 $ENV{INSTALL_BASE} = $instdir;
 if ($ENV{MAKEFLAGS}) {
@@ -89,8 +91,7 @@ create_ok($_, 'My' . $_) for qw/Model View Controller/;
 
 command_ok( [ $^X, 'Makefile.PL' ] );
 ok -e "Makefile", "Makefile generated";
-#NOTE: do not assume that 'make' is always 'make' as e.g. Win32/strawberry perl uses 'dmake'
-command_ok( [ ($Config{make} || 'make') ] );
+command_ok( [ $MAKE ] );
 
 run_generated_component_tests();
 
@@ -129,7 +130,7 @@ my $server_script_new = do {
 is $server_script, $server_script_new;
 
 diag "Installed app is in $instdir";
-command_ok( [ ($Config{make} || 'make', 'install') ] );
+command_ok( [ $MAKE, 'install' ] );
 
 my $inst_app_dir = catdir($instdir);
 chdir($inst_app_dir) or die "Cannot chdir to $inst_app_dir: $!";
