@@ -23,16 +23,6 @@ $VERSION =~ tr/_//d;
 
 my %cache;
 
-=head1 NAME
-
-Catalyst::Helper - Bootstrap a Catalyst application
-
-=head1 SYNOPSIS
-
-  catalyst.pl <myappname>
-
-=cut
-
 sub get_sharedir_file {
     my ($self, @filename) = @_;
     my $dist_dir;
@@ -543,6 +533,17 @@ sub _deprecate_file {
     }
 }
 
+1;
+__END__
+
+=head1 NAME
+
+Catalyst::Helper - Bootstrap a Catalyst application
+
+=head1 SYNOPSIS
+
+  catalyst.pl <myappname>
+
 =head1 DESCRIPTION
 
 This module is used by B<catalyst.pl> to create a set of scripts for a
@@ -710,19 +711,13 @@ Don't give the number or the .t suffix for the test name.
 
 Method for getting a file out of share/
 
-=cut
-
 =head2 render_file_contents
 
 Process a L<Template::Toolkit> template.
 
-=cut
-
 =head2 render_sharedir_file
 
 Render a template/image file from our share directory
-
-=cut
 
 =head1 NOTE
 
@@ -744,6 +739,3 @@ This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-1;
-

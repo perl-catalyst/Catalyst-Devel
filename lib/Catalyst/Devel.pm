@@ -9,6 +9,8 @@ $VERSION =~ tr/_//d;
 
 our $CATALYST_SCRIPT_GEN = 40;
 
+1;
+__END__
 
 =head1 NAME
 
@@ -51,5 +53,3 @@ This library is free software. You can redistribute it and/or modify
 it under the same terms as Perl itself.
 
 =cut
-
-1;
