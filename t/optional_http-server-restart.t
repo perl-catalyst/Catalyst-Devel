@@ -61,54 +61,47 @@ my @files = (
 # change some files and make sure the server restarts itself
 NON_ERROR_RESTART:
 for ( 1 .. 5 ) {
-    my $index = rand @files;
-    open my $pm, '>>', $files[$index]
-      or die "Unable to open $files[$index] for writing: $!";
-    print $pm "\n";
-    close $pm;
+    SKIP : {
+        my $index = rand @files;
+        open my $pm, '>>', $files[$index]
+            or die "Unable to open $files[$index] for writing: $!";
+        print $pm "\n";
+        close $pm;
 
-    if ( ! look_for_restart() ) {
-    SKIP:
-        {
+        if ( ! look_for_restart() ) {
             skip "Server did not restart, no sense in checking further", 1;
         }
-        next NON_ERROR_RESTART;
-    }
 
-    my $response = get("http://localhost:$port/");
-    like( $response, qr/Welcome to the  world of Catalyst/,
-          'Non-error restart, request OK' );
+        my $response = get("http://localhost:$port/");
+        like( $response, qr/Welcome to the  world of Catalyst/,
+              'Non-error restart, request OK' );
+    }
 }
 
 # add errors to the file and make sure server does die
 DIES_ON_ERROR:
 for ( 1 .. 5 ) {
-    my $index = rand @files;
-    open my $pm, '>>', $files[$index]
-      or die "Unable to open $files[$index] for writing: $!";
-    print $pm "bleh";
-    close $pm;
+    SKIP : {
+        my $index = rand @files;
+        open my $pm, '>>', $files[$index]
+            or die "Unable to open $files[$index] for writing: $!";
+        print $pm "bleh";
+        close $pm;
 
-    if ( ! look_for_death() ) {
-    SKIP:
-        {
+        if ( ! look_for_death() ) {
             skip "Server restarted, no sense in checking further", 2;
         }
-        next DIES_ON_ERROR;
-    }
-    copy_test_app();
 
-    if ( ! look_for_restart() ) {
-    SKIP:
-        {
+        copy_test_app();
+
+        if ( ! look_for_restart() ) {
             skip "Server did not restart, no sense in checking further", 1;
         }
-        next DIES_ON_ERROR;
-    }
 
-    my $response = get("http://localhost:$port/");
-    like( $response, qr/Welcome to the  world of Catalyst/,
-          'Non-error restart after death, request OK' );
+        my $response = get("http://localhost:$port/");
+        like( $response, qr/Welcome to the  world of Catalyst/,
+              'Non-error restart after death, request OK' );
+    }
 }
 
 # multiple restart directories
@@ -186,7 +179,7 @@ sub start_server {
         $waited++;
 
         if ( $waited >= 10 ) {
-            BAIL_OUT('Waited 10 seconds for server to start, to no avail');
+            die 'Waited 10 seconds for server to start, to no avail';
         }
     }
 
