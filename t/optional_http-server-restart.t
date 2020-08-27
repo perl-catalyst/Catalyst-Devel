@@ -11,41 +11,40 @@ BEGIN {
     plan skip_all => 'set TEST_HTTP to enable this test' unless $ENV{TEST_HTTP};
 }
 
-use File::Copy qw( copy );
-use File::Path;
-use FindBin;
+use File::Spec::Functions qw(updir catdir);
+use Cwd qw(abs_path);
+use File::Basename qw(dirname);
+use File::Temp qw(tempdir);
+use File::Path qw(rmtree);
 use LWP::Simple;
 use IO::Socket;
-use IPC::Open3;
+use IPC::Open3 qw(open3);
 use Time::HiRes qw/sleep/;
 use Catalyst::Helper;
-use File::Copy::Recursive;
+use File::Copy::Recursive qw(dircopy);
 
 plan tests => 35;
 
-my $tmpdir = "$FindBin::Bin/../t/tmp";
+my $helper_lib = abs_path(catdir(dirname($INC{'Catalyst/Helper.pm'}), updir));
 
-# clean up
-rmtree $tmpdir if -d $tmpdir;
+my $tmpdir = tempdir(CLEANUP => 1);
+my $appdir = catdir($tmpdir, 'TestApp');
 
-# create a TestApp and copy the test libs into it
-mkdir $tmpdir;
-chdir $tmpdir;
+mkdir $appdir;
 
 my $helper = Catalyst::Helper->new(
     {
+        dir => $appdir,
         '.newfiles' => 1,
     }
 );
 
 $helper->mk_app('TestApp');
 
-chdir "$FindBin::Bin/..";
-
 copy_test_app();
 
 # remove TestApp's tests
-rmtree "$tmpdir/TestApp/t";
+rmtree "$appdir/t";
 
 # spawn the standalone HTTP server
 my $port = 30000 + int rand( 1 + 10000 );
@@ -54,9 +53,9 @@ my ( $pid, $server ) = start_server($port);
 
 # change various files
 my @files = (
-    "$tmpdir/TestApp/lib/TestApp.pm",
-    "$tmpdir/TestApp/lib/TestApp/Controller/Foo.pm",
-    "$tmpdir/TestApp/lib/TestApp/Controller/Root.pm",
+    "$appdir/lib/TestApp.pm",
+    "$appdir/lib/TestApp/Controller/Foo.pm",
+    "$appdir/lib/TestApp/Controller/Root.pm",
 );
 
 # change some files and make sure the server restarts itself
@@ -130,47 +129,38 @@ $port += 1;
 copy_test_app();
 
 @files = (
-  "$tmpdir/TestApp/lib/TestApp/Controller/Subdir1/Foo.pm",
-  "$tmpdir/TestApp/lib/TestApp/Controller/Subdir2/Foo.pm",
+  "$appdir/lib/TestApp/Controller/Subdir1/Foo.pm",
+  "$appdir/lib/TestApp/Controller/Subdir2/Foo.pm",
 );
-
-my $app_root = "$tmpdir/TestApp";
-my $restartdirs = join ' ', map{
-    "-restartdirectory $app_root/lib/TestApp/Controller/Subdir$_"
-} 1, 2;
 
 ( $pid, $server ) = start_server($port);
 
 MULTI_DIR_RESTART:
 for ( 1 .. 5 ) {
-    my $index = rand @files;
-    open my $pm, '>>', $files[$index]
-      or die "Unable to open $files[$index] for writing: $!";
-    print $pm "\n";
-    close $pm;
+    SKIP : {
+        my $index = rand @files;
+        open my $pm, '>>', $files[$index]
+          or die "Unable to open $files[$index] for writing: $!";
+        print $pm "\n";
+        close $pm;
 
-    if ( ! look_for_restart() ) {
-    SKIP:
-        {
+        if ( ! look_for_restart() ) {
             skip "Server did not restart, no sense in checking further", 1;
         }
-        next MULTI_DIR_RESTART;
-    }
 
-    my $response = get("http://localhost:$port/");
-    like( $response, qr/Welcome to the  world of Catalyst/,
-          'Non-error restart with multiple watched dirs' );
+        my $response = get("http://localhost:$port/");
+        like( $response, qr/Welcome to the  world of Catalyst/,
+              'Non-error restart with multiple watched dirs' );
+    }
 }
 
 kill 9, $pid;
 close $server;
 wait;
 
-rmtree $tmpdir if -d $tmpdir;
-
 sub copy_test_app {
-    { no warnings 'once'; $File::Copy::Recursive::RMTrgFil = 1; }
-    File::Copy::Recursive::dircopy( 't/lib/TestApp', "$tmpdir/TestApp/lib/TestApp" );
+    local $File::Copy::Recursive::RMTrgFil = 1;
+    dircopy( 't/lib/TestApp', "$appdir/lib/TestApp" );
 }
 
 sub start_server {
@@ -179,8 +169,8 @@ sub start_server {
     my $server;
     my $pid = open3(
         undef, $server, undef,
-        $^X,   "-I$FindBin::Bin/../lib",
-        "$tmpdir/TestApp/script/testapp_server.pl", '--port',
+        $^X,   "-I$helper_lib",
+        "$appdir/script/testapp_server.pl", '--port',
         $port,                                                     '--restart'
     ) or die "Unable to spawn standalone HTTP server: $!";
 
