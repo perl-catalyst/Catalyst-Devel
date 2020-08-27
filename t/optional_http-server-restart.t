@@ -45,7 +45,7 @@ chdir "$FindBin::Bin/..";
 copy_test_app();
 
 # remove TestApp's tests
-rmtree 't/tmp/TestApp/t';
+rmtree "$tmpdir/TestApp/t";
 
 # spawn the standalone HTTP server
 my $port = 30000 + int rand( 1 + 10000 );
@@ -54,9 +54,9 @@ my ( $pid, $server ) = start_server($port);
 
 # change various files
 my @files = (
-    "$FindBin::Bin/../t/tmp/TestApp/lib/TestApp.pm",
-    "$FindBin::Bin/../t/tmp/TestApp/lib/TestApp/Controller/Foo.pm",
-    "$FindBin::Bin/../t/tmp/TestApp/lib/TestApp/Controller/Root.pm",
+    "$tmpdir/TestApp/lib/TestApp.pm",
+    "$tmpdir/TestApp/lib/TestApp/Controller/Foo.pm",
+    "$tmpdir/TestApp/lib/TestApp/Controller/Root.pm",
 );
 
 # change some files and make sure the server restarts itself
@@ -130,11 +130,11 @@ $port += 1;
 copy_test_app();
 
 @files = (
-  "$FindBin::Bin/../t/tmp/TestApp/lib/TestApp/Controller/Subdir1/Foo.pm",
-  "$FindBin::Bin/../t/tmp/TestApp/lib/TestApp/Controller/Subdir2/Foo.pm",
+  "$tmpdir/TestApp/lib/TestApp/Controller/Subdir1/Foo.pm",
+  "$tmpdir/TestApp/lib/TestApp/Controller/Subdir2/Foo.pm",
 );
 
-my $app_root = "$FindBin::Bin/../t/tmp/TestApp";
+my $app_root = "$tmpdir/TestApp";
 my $restartdirs = join ' ', map{
     "-restartdirectory $app_root/lib/TestApp/Controller/Subdir$_"
 } 1, 2;
@@ -166,12 +166,11 @@ kill 9, $pid;
 close $server;
 wait;
 
-rmtree "$FindBin::Bin/../t/tmp" if -d "$FindBin::Bin/../t/tmp";
+rmtree $tmpdir if -d $tmpdir;
 
 sub copy_test_app {
     { no warnings 'once'; $File::Copy::Recursive::RMTrgFil = 1; }
-    copy( 't/lib/TestApp.pm', 't/tmp/TestApp/lib/TestApp.pm' );
-    File::Copy::Recursive::dircopy( 't/lib/TestApp', 't/tmp/TestApp/lib/TestApp' );
+    File::Copy::Recursive::dircopy( 't/lib/TestApp', "$tmpdir/TestApp/lib/TestApp" );
 }
 
 sub start_server {
@@ -181,7 +180,7 @@ sub start_server {
     my $pid = open3(
         undef, $server, undef,
         $^X,   "-I$FindBin::Bin/../lib",
-        "$FindBin::Bin/../t/tmp/TestApp/script/testapp_server.pl", '--port',
+        "$tmpdir/TestApp/script/testapp_server.pl", '--port',
         $port,                                                     '--restart'
     ) or die "Unable to spawn standalone HTTP server: $!";
 
