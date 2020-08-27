@@ -1,13 +1,13 @@
 /MANIFEST
 /MANIFEST.bak
-/META.*
+/MANIFEST.SKIP
 /MYMETA.*
 /Makefile
 /Makefile.old
 /README
 /blib/
-/inc/
 /pm_to_blib
+/Distar
 *~
 *#
 .#*
