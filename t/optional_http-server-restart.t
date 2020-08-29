@@ -208,7 +208,7 @@ sub look_for_restart {
     my $count = 0;
     my $line;
 
-    while ( ( $line || '' ) !~ /can connect/ ) {
+    while ( ( $line || '' ) !~ /Accepting connections/ ) {
         $line = $server->getline;
         sleep 0.1;
         if ( $count++ > 300 ) {
