@@ -256,7 +256,7 @@ sub mk_file {
             $file .= '.new';
         }
     }
-    
+
     if ( my $f = IO::File->new("> $file") ) {
         binmode $f;
         print $f $content;

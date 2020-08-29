@@ -21,7 +21,7 @@ Catalyst::Devel - Catalyst Development Tools
 The C<Catalyst-Devel> distribution includes a variety of modules useful
 for the development of Catalyst applications, but not required to run
 them. This is intended to make it easier to deploy Catalyst apps. The
-runtime parts of Catalyst are now known as C<Catalyst::Runtime>. 
+runtime parts of Catalyst are now known as C<Catalyst::Runtime>.
 
 C<Catalyst-Devel> includes the L<Catalyst::Helper> system, which
 autogenerates scripts and tests; L<Module::Install::Catalyst>, a
