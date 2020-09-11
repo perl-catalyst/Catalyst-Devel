@@ -1,5 +1,6 @@
 This file documents the revision history for Perl extension Catalyst-Devel.
 
+1.42 - 2020-09-11
         - stop using Module::Install for packaging, improving metadata and
           fixing Makefile.PL on perl 5.26+.  Generating a Catalyst application
           still uses Module::Install::Catalyst for now.
