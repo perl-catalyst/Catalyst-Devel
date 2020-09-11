@@ -18,7 +18,7 @@ use namespace::autoclean;
 
 with 'MooseX::Emulate::Class::Accessor::Fast';
 
-our $VERSION = '1.41';
+our $VERSION = '1.42';
 $VERSION =~ tr/_//d;
 
 my %cache;
