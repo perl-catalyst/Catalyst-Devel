@@ -107,7 +107,7 @@ sub mk_app {
       || 'Catalyst developer';
 
     my $gen_scripts  = ( $self->{makefile} ) ? 0 : 1;
-    my $gen_makefile = ( $self->{scripts} )  ? 0 : 1;
+    my $gen_cpanfile = ( $self->{scripts} )  ? 0 : 1;
     my $gen_app = ( $self->{scripts} || $self->{makefile} ) ? 0 : 1;
 
     if ($gen_app) {
@@ -117,8 +117,8 @@ sub mk_app {
             $self->$_;
         }
     }
-    if ($gen_makefile) {
-        $self->_mk_makefile;
+    if ($gen_cpanfile) {
+        $self->_mk_cpanfile;
     }
     if ($gen_scripts) {
         for ( qw/ _mk_cgi _mk_fastcgi _mk_server
@@ -376,19 +376,16 @@ sub _mk_rootclass {
         file( $self->{c}, "Root.pm" ) );
 }
 
-sub _mk_makefile {
+sub _mk_cpanfile {
     my $self = shift;
     $self->{path} = join('/', 'lib', split( '::', $self->{name} ) );
     $self->{path} .= '.pm';
     my $dir = $self->{dir};
-    $self->render_sharedir_file( 'Makefile.PL.tt', file($dir, "Makefile.PL") );
+    $self->render_sharedir_file( 'cpanfile.tt', file($dir, 'cpanfile') );
 
-    if ( $self->{makefile} ) {
-
-        # deprecate the old Build.PL file when regenerating Makefile.PL
-        $self->_deprecate_file(
-            file( $self->{dir}, 'Build.PL' ) );
-    }
+    # deprecate the old Makefile.PL and Build.PL file when regenerating cpanfile
+    $self->_deprecate_file( file( $self->{dir}, 'Makefile.PL' ) );
+    $self->_deprecate_file( file( $self->{dir}, 'Build.PL' ) );
 }
 
 sub _mk_psgi {

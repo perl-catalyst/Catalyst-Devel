@@ -24,8 +24,8 @@ them. This is intended to make it easier to deploy Catalyst apps. The
 runtime parts of Catalyst are now known as C<Catalyst::Runtime>.
 
 C<Catalyst-Devel> includes the L<Catalyst::Helper> system, which
-autogenerates scripts and tests; L<Module::Install::Catalyst>, a
-L<Module::Install> extension for Catalyst; and requirements for a
+autogenerates scripts, tests and a starter cpanfile for declaring dependencies;
+and requirements for a
 variety of development-related modules. The documentation remains with
 L<Catalyst::Runtime>.
 
