@@ -32,7 +32,6 @@ my %META = (
         'File::Copy::Recursive'                   => 0,
         'Path::Class'                             => '0.09',
         'Template'                                => '2.14',
-        'Module::Install'                         => '1.02',
       },
     },
     develop => {

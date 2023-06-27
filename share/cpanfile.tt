@@ -1,0 +1,3 @@
+# see `perldoc cpanfile` for more information about declaring prerequisites
+
+requires 'Catalyst';

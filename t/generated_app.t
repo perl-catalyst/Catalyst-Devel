@@ -60,7 +60,7 @@ chdir($app_dir) or die "Cannot chdir to $app_dir: $!";
 lib->import(catdir($dir, 'TestApp', 'lib'));
 
 my @files = qw|
-    Makefile.PL
+    cpanfile
     testapp.conf
     testapp.psgi
     lib/TestApp.pm
